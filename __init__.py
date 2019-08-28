@@ -1,4 +1,4 @@
-# TODO: Add an appropriate license to your skill before publishing.  See
+#TODO: Add an appropriate license to your skill before publishing.  See
 # the LICENSE file for more information.
 
 # Below is the list of outside modules you'll be using in your skill.
