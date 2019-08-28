@@ -19,13 +19,15 @@ class AntoniaSkill(MycroftSkill):
 
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
-        super(AntoniaSkill, self).__init__(name="AntoniaSkill")
+        super(AntoniaSkill, self).__init__("AntoniaSkill")
         
         # Initialize working variables used within the skill.
         self.count = 0
 
     def initialize(self):
-        i_have_a_question = IntentBuilder("TengoUnaPregunta").require("TengoUnaPregunta").build()
+
+        #Creating I have a question intent
+        i_have_a_question = IntentBuilder("IHaveAQuestion").require("IHaveAQuestion").build()
         self.register_intent(i_have_a_question, self.handle_i_have_a_question_intent)
 
     # The "handle_xxxx_intent" function is triggered by Mycroft when the
@@ -40,12 +42,12 @@ class AntoniaSkill(MycroftSkill):
     #   'Howdy you great big world'
     #   'Greetings planet earth'
     #@intent_handler(IntentBuilder("").require("Hello").require("World"))
-    @intent_handler(IntentBuilder("").require("TengoUnaPregunta"))
+    @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
         # In this case, respond by simply speaking a canned response.
         # Mycroft will randomly speak one of the lines from the file
         #    dialogs/en-us/hello.world.dialog
-        self.speak_dialog("tengo.una.pregunta")
+        self.speak_dialog("i.have.a.question")
 
     #@intent_handler(IntentBuilder("").require("Count").require("Dir"))
     #def handle_count_intent(self, message):
