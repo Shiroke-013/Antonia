@@ -49,6 +49,10 @@ class AntoniaSkill(MycroftSkill):
         #    dialogs/en-us/hello.world.dialog
         self.speak_dialog("i.have.a.question")
 
+        question = self.get_response(dialog="i.have.a.question")
+        with open("/home/pi/test.question", "w") as fl:
+            fl.write(question)
+
     #@intent_handler(IntentBuilder("").require("Count").require("Dir"))
     #def handle_count_intent(self, message):
         #if message.data["Dir"] == "up":
