@@ -1,6 +1,8 @@
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
+from mycroft.skills.audioservice import AudioService
+
 import json # This library make us able to convert text to json.
 import os # This library make us be able to execute Os commands
 
@@ -23,7 +25,9 @@ class AntoniaSkill(MycroftSkill):
         # Creating I have a question intent.
         i_have_a_question = IntentBuilder("IHaveAQuestion").require("IHaveAQuestion").build()
         self.register_intent(i_have_a_question, self.handle_i_have_a_question_intent)
-
+        self.audio_service = AudioService(self.bus)
+        #self.audio_service.play('file:///path/to/my/track.mp3')
+        
     @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
         self.speak_dialog("i.have.a.question")
