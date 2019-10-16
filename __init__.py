@@ -10,6 +10,9 @@
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
+#from mycroft.skills.audioservice import AudioService
+#Part of the code that needs to be put after the creation of the mp3 file, because it reproduces it:
+#self.audio_service.play('file:///path/to/my/track.mp3')
 
 # Each skill is contained within its own class, which inherits base methods
 # from the MycroftSkill class.  You extend this class as shown below.
@@ -25,6 +28,8 @@ class AntoniaSkill(MycroftSkill):
         self.count = 0
 
     def initialize(self):
+        #Instantiating AudioService
+        #self.audio_service = AudioService(self.bus)
 
         #Creating I have a question intent
         i_have_a_question = IntentBuilder("IHaveAQuestion").require("IHaveAQuestion").build()
