@@ -26,7 +26,7 @@ class AntoniaSkill(MycroftSkill):
         i_have_a_question = IntentBuilder("IHaveAQuestion").require("IHaveAQuestion").build()
         self.register_intent(i_have_a_question, self.handle_i_have_a_question_intent)
         self.audio_service = AudioService(self.bus)
-        #self.audio_service.play('file:///path/to/my/track.mp3')
+        
         
     @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
@@ -36,7 +36,9 @@ class AntoniaSkill(MycroftSkill):
         add_atributes_to_json(question)
         generate_json()
         execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
-
+       #added:
+        mp3(self, "/home/pi/answer")
+        
     def add_atributes_to_json(request):
         jsonTest["text"] = request
 
@@ -47,6 +49,12 @@ class AntoniaSkill(MycroftSkill):
     def execute_curl(jsonName, tunnelUrl):
         os.system('curl -H "Content-Type: application/json" -d @assets/json/' + jsonName + ' ' + tunnelUrl)
 
+
+        #added:
+    def mp3(self, audio_path):
+        while os.path.exist(audio_path):
+            self.audio_service.play(audio_path)
+            os.remove("answer.mp3")
         
 # The "create_skill()" method is used to create an instance of the skill.
 # Note that it's outside the class itself.
