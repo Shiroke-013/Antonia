@@ -1,6 +1,15 @@
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
+import json # This library make us able to convert text to json.
+import os # This library make us be able to execute Os commands
+
+JSON_PATH = 'assets/json/request.json'
+
+ # This will be the json to send to the server.
+jsonTest = {
+    "user": "Antonia",
+}
 
 class AntoniaSkill(MycroftSkill):
 
@@ -20,9 +29,21 @@ class AntoniaSkill(MycroftSkill):
         self.speak_dialog("i.have.a.question")
 
         question = self.get_response(dialog="i.have.a.question")
-        with open("/home/pi/test.question", "w") as fl:
-            fl.write(question)
+        add_atributes_to_json(question)
+        generate_json()
+        execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
 
+    def add_atributes_to_json(request):
+        jsonTest["text"] = request
+
+    def generate_json():
+        with open(JSON_PATH, 'w') as outfile:
+            json.dump(jsonTest, outfile)
+
+    def execute_curl(jsonName, tunnelUrl):
+        os.system('curl -H "Content-Type: application/json" -d @assets/json/' + jsonName + ' ' + tunnelUrl)
+
+        
 # The "create_skill()" method is used to create an instance of the skill.
 # Note that it's outside the class itself.
 def create_skill():
