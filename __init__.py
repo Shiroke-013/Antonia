@@ -6,6 +6,7 @@ from mycroft.skills.audioservice import AudioService
 import json # This library make us able to convert text to json.
 import os # This library make us be able to execute Os commands
 import time
+import speech_recognition as sr
 
 class AntoniaSkill(MycroftSkill):
 
@@ -29,8 +30,19 @@ class AntoniaSkill(MycroftSkill):
         
     @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
-        question = self.get_response(dialog="i.have.a.question")
+        #question = self.get_response(dialog="i.have.a.question", num_retries=10)
 
+        self.speak_dialog("i.have.a.question")
+        recognizer=sr.Recognizer()
+        source  = sr.Microphone()
+        with sr.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source, duration=1) #nivela el microfono segun el ruido del ambiente
+            audio = recognizer.listen(source,timeout=None)
+            question = recognizer.recognize_google(audio,language = "es-ES")
+
+
+        with open("/home/pi/testimonio.txt", "w") as testi:
+            testi.write(question)
         self.jsonTest["text"] = question
         #add_atributes_to_json(question)
 
@@ -43,8 +55,9 @@ class AntoniaSkill(MycroftSkill):
 
         audio_path="/home/pi/answer/answer.mp3"
         while not os.path.exists(audio_path):
-            time.sleep(1)
+            time.sleep(3)
         self.audio_service.play(audio_path)
+        os.system('mpg123 /home/pi/answer/answer.mp3')
         os.remove(audio_path)
         #play_mp3("/home/pi/answer/answer.mp3")
         
