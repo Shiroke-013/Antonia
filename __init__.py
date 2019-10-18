@@ -5,6 +5,7 @@ from mycroft.skills.audioservice import AudioService
 
 import json # This library make us able to convert text to json.
 import os # This library make us be able to execute Os commands
+import time
 
 class AntoniaSkill(MycroftSkill):
 
@@ -41,8 +42,8 @@ class AntoniaSkill(MycroftSkill):
         #execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
 
         audio_path="/home/pi/answer/answer.mp3"
-        while not os.path.exist(audio_path):
-            pass
+        while not os.path.exists(audio_path):
+            time.sleep(1)
         self.audio_service.play(audio_path)
         os.remove(audio_path)
         #play_mp3("/home/pi/answer/answer.mp3")
