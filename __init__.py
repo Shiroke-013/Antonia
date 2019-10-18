@@ -43,7 +43,7 @@ class AntoniaSkill(MycroftSkill):
             json.dump(jsonTest, outfile)
 
     def execute_curl(self, jsonName, tunnelUrl):
-        os.system('curl -H "Content-Type: application/json" -d @assets/json/' + jsonName + ' ' + tunnelUrl)
+        os.system('curl -H "Content-Type: application/json" -d @/home/pi/Antonia/assets/json' + jsonName + ' ' + tunnelUrl)
 
     def play_mp3(self, audio_path):
         while os.path.exist(audio_path):
