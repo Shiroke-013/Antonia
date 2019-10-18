@@ -30,8 +30,7 @@ class AntoniaSkill(MycroftSkill):
         
     @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
-        self.speak_dialog("i.have.a.question")
-
+        
         question = self.get_response(dialog="i.have.a.question")
         add_atributes_to_json(question)
         generate_json()
