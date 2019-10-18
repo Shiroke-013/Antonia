@@ -17,7 +17,7 @@ class AntoniaSkill(MycroftSkill):
         self.jsonTest = {
             "user": "Antonia",
         }
-        self.JSON_PATH = 'assets/json/request.json'
+        self.JSON_PATH = '/home/pi/Antonia/assets/json/request.json'
 
     def initialize(self):
         # Creating I have a question intent.
@@ -29,11 +29,23 @@ class AntoniaSkill(MycroftSkill):
     @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
         question = self.get_response(dialog="i.have.a.question")
-        add_atributes_to_json(question)
-        generate_json()
-        execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
-       #added:
-        play_mp3("/home/pi/answer/answer.mp3")
+
+        self.jsonTest["text"] = question
+        #add_atributes_to_json(question)
+
+        with open(self.JSON_PATH, 'w') as outfile:
+            json.dump(self.jsonTest, outfile)
+        #generate_json()
+
+        os.system('curl -H "Content-Type: application/json" -d @/home/pi/Antonia/assets/json/request.json https://projectantonia.ngrok.io/test/message')
+        #execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
+
+        audio_path="/home/pi/answer/answer.mp3"
+        while !os.path.exist(audio_path):
+            pass
+        self.audio_service.play(audio_path)
+        os.remove(audio_path)
+        #play_mp3("/home/pi/answer/answer.mp3")
         
     def add_atributes_to_json(self, request):
         self.jsonTest["text"] = request
@@ -43,7 +55,7 @@ class AntoniaSkill(MycroftSkill):
             json.dump(jsonTest, outfile)
 
     def execute_curl(self, jsonName, tunnelUrl):
-        os.system('curl -H "Content-Type: application/json" -d @/home/pi/Antonia/assets/json' + jsonName + ' ' + tunnelUrl)
+        os.system('curl -H "Content-Type: application/json" -d @/home/pi/Antonia/assets/json/' + jsonName + ' ' + tunnelUrl)
 
     def play_mp3(self, audio_path):
         while os.path.exist(audio_path):
