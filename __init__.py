@@ -41,7 +41,7 @@ class AntoniaSkill(MycroftSkill):
         #execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
 
         audio_path="/home/pi/answer/answer.mp3"
-        while !os.path.exist(audio_path):
+        while not os.path.exist(audio_path):
             pass
         self.audio_service.play(audio_path)
         os.remove(audio_path)
