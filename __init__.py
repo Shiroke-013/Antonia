@@ -37,21 +37,19 @@ class AntoniaSkill(MycroftSkill):
         generate_json()
         execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
        #added:
-        mp3(self, "/home/pi/answer")
+        generate_mp3(self, "/home/pi/answer")
         
-    def add_atributes_to_json(request):
+    def add_atributes_to_json(self, request):
         jsonTest["text"] = request
 
-    def generate_json():
+    def generate_json(self):
         with open(JSON_PATH, 'w') as outfile:
             json.dump(jsonTest, outfile)
 
-    def execute_curl(jsonName, tunnelUrl):
+    def execute_curl(self, jsonName, tunnelUrl):
         os.system('curl -H "Content-Type: application/json" -d @assets/json/' + jsonName + ' ' + tunnelUrl)
 
-
-        #added:
-    def mp3(self, audio_path):
+    def generate_mp3(self, audio_path):
         while os.path.exist(audio_path):
             self.audio_service.play(audio_path)
             os.remove("answer.mp3")
