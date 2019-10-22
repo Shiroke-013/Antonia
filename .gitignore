@@ -1,0 +1,9 @@
+# Dependencies
+__pycache__
+
+# Garbage files
+*.bk
+*.old
+
+# Binary files
+*.mp3

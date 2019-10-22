@@ -19,10 +19,15 @@ class AntoniaSkill(MycroftSkill):
         self.jsonTest = {
             "user": "Antonia",
         }
-        self.JSON_PATH = '/home/pi/Antonia/assets/json/request.json'
 
+        # Config variables
+        self.JSON_PATH = '/home/pi/Antonia/assets/json/request.json'
+        self.AUDIO_PATH ="/home/pi/answer/answer.mp3"
+        self.REQUEST_JSON = 'request.json'
+        self.NGROK_ROUTE = 'https://projectantonia.ngrok.io/test/message'
+
+    # Creating I have a question intent.
     def initialize(self):
-        # Creating I have a question intent.
         i_have_a_question = IntentBuilder("IHaveAQuestion").require("IHaveAQuestion").build()
         self.register_intent(i_have_a_question, self.handle_i_have_a_question_intent)
         self.audio_service = AudioService(self.bus)
@@ -30,52 +35,35 @@ class AntoniaSkill(MycroftSkill):
         
     @intent_handler(IntentBuilder("").require("IHaveAQuestion"))
     def handle_i_have_a_question_intent(self, message):
-        #question = self.get_response(dialog="i.have.a.question", num_retries=10)
-
         self.speak_dialog("i.have.a.question")
-        recognizer=sr.Recognizer()
-        source  = sr.Microphone()
+        recognizer = sr.Recognizer()
+        source = sr.Microphone()
         with sr.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source, duration=1) #nivela el microfono segun el ruido del ambiente
-            audio = recognizer.listen(source,timeout=None)
-            question = recognizer.recognize_google(audio,language = "es-ES")
+            recognizer.adjust_for_ambient_noise(source, duration = 1) # nivela el microfono segun el ruido del ambiente
+            audio = recognizer.listen(source, timeout = None)
+            question = recognizer.recognize_google(audio, language = "es-ES")
 
-
-        with open("/home/pi/testimonio.txt", "w") as testi:
-            testi.write(question)
-        self.jsonTest["text"] = question
-        #add_atributes_to_json(question)
-
-        with open(self.JSON_PATH, 'w') as outfile:
-            json.dump(self.jsonTest, outfile)
-        #generate_json()
-
-        os.system('curl -H "Content-Type: application/json" -d @/home/pi/Antonia/assets/json/request.json https://projectantonia.ngrok.io/test/message')
-        #execute_curl('request.json', 'https://projectantonia.ngrok.io/test/message')
-
-        audio_path="/home/pi/answer/answer.mp3"
-        while not os.path.exists(audio_path):
-            time.sleep(3)
-        self.audio_service.play(audio_path)
-        os.system('mpg123 /home/pi/answer/answer.mp3')
-        os.remove(audio_path)
-        #play_mp3("/home/pi/answer/answer.mp3")
+        add_atributes_to_json(question)
+        generate_json()
+        execute_curl(self.REQUEST_JSON, self.NGROK_ROUTE)
+        play_mp3(self.AUDIO_PATH)
+        os.remove(self.AUDIO_PATH)
         
     def add_atributes_to_json(self, request):
         self.jsonTest["text"] = request
 
     def generate_json(self):
         with open(self.JSON_PATH, 'w') as outfile:
-            json.dump(jsonTest, outfile)
+            json.dump(self.jsonTest, outfile)
 
     def execute_curl(self, jsonName, tunnelUrl):
         os.system('curl -H "Content-Type: application/json" -d @/home/pi/Antonia/assets/json/' + jsonName + ' ' + tunnelUrl)
 
     def play_mp3(self, audio_path):
-        while os.path.exist(audio_path):
-            self.audio_service.play(audio_path)
-            os.remove("answer.mp3")
-
+        while not os.path.exists(audio_path):
+            time.sleep(3)
+        self.audio_service.play(audio_path)
+        os.system('mpg123 ' + audio_path)
         
 # The "create_skill()" method is used to create an instance of the skill.
 # Note that it's outside the class itself.
